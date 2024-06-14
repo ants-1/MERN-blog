@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Header from "./components/Header";
 import Home from "./pages/Home";
@@ -6,24 +7,20 @@ import SignUp from "./pages/SignUp";
 import Post from "./pages/Post";
 
 function App() {
-  const posts = [
-    {
-      id: 1,
-      title: "Post 1",
-    },
-    {
-      id: 2,
-      title: "Post 2",
-    },
-    {
-      id: 3,
-      title: "Post 3",
-    },
-    {
-      id: 4,
-      title: "Post 4",
-    },
-  ];
+  const [posts, setPosts] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async() => {
+      try {
+        const response = await fetch("http://localhost:3000/api/posts");
+        const data = await response.json();
+        setPosts(data);
+      } catch (error) {
+        console.log("Error fetching data:", error);
+      }
+    }
+    fetchData();
+  });
 
   return (
     <>

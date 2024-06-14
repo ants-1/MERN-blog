@@ -7,6 +7,7 @@ const LocalStrategy = require("passport-local");
 const bcrypt = require('bcrypt');
 const session = require("express-session");
 const User = require('./models/User');
+const cors = require('cors');
 
 const app = express();
 const PORT = process.env.PORT;
@@ -23,7 +24,7 @@ async function main() {
   await mongoose.connect(mongoDB);
   console.log("MongoDB connected");
 }
-
+app.use(cors());
 app.use(bodyParser.json());
 app.use(express.json());
 app.use(

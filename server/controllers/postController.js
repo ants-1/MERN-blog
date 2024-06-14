@@ -1,20 +1,6 @@
 const Post = require("../models/Post");
 const asyncHandler = require("express-async-handler");
-const jwt = require('jsonwebtoken');
-
-const verifyToken = (req, res, next) => {
-  const bearerHeader = req.headers["authorization"];
-
-  if (typeof bearerHeader !== "undefined") {
-    const bearer = bearerHeader.split(' ');
-    const bearerToken = bearer[1];
-    req.token = bearerToken;
-    next();
-  } else {
-    return res.status(403).json({ message: "Unauth access" });
-  }
-};
-
+const verifyToken = require("../config/verifyToken");
 
 // @desc    Retrieve all posts
 // route    GET /api/posts
@@ -54,57 +40,63 @@ exports.create_post = [
     const existingPost = await Post.findById(req.body._id);
 
     if (!newPost) {
-      return res.status(404).json({ error: "Error while creating post"});
+      return res.status(404).json({ error: "Error while creating post" });
     }
 
     if (existingPost) {
-      return res.status(404).json({ error: "Post already exist"});
+      return res.status(404).json({ error: "Post already exist" });
     }
-
-    jwt.verify(req.token, process.env.SECRET_KEY, (err, authData) => {
-      if (err) {
-        return res.status(403);
-      } else {
-        res.json({
-          message: 'Post created...',
-          authData
-        })
-      }
-    });
 
     await newPost.save();
 
-    res.json(req.json);
+    res
+      .status(201)
+      .json({ message: "Post created successfully", post: newPost });
   }),
 ];
 
 // @desc    Update post by ID
 // route    PUT /api/posts/:id
-exports.update_post = asyncHandler(async (req, res, next) => {
-  const { postId } = req.params;
+exports.update_post = [
+  verifyToken,
+  asyncHandler(async (req, res, next) => {
+    const { postId } = req.params;
 
-  const updatedPost = {
-    _id: req.body._id,
-    title: req.body.title,
-    content: req.body.content,
-    img_url: req.body.img_url,
-    published: req.body.published,
-    comments: req.body.comments,
-    author: req.body.author,
-    timestamp: req.body.timestamp,
-  };
+    const updatedPost = {
+      title: req.body.title,
+      content: req.body.content,
+      img_url: req.body.img_url,
+      published: req.body.published,
+      comments: req.body.comments,
+      author: req.body.author,
+      timestamp: req.body.timestamp,
+    };
 
-  await Post.findByIdAndUpdate(postId, updatedPost, { new: true });
+    const post = await Post.findByIdAndUpdate(postId, updatedPost, {
+      new: true,
+    });
 
-  res.json(req.body);
-});
+    if (!post) {
+      return res.status(404).json({ error: "Post not found" });
+    }
+
+    res.json({ message: "Post updated successfully", post });
+  }),
+];
 
 // @desc    Delete post by ID
 // route    DELETE /api/posts/:id
-exports.delete_post = asyncHandler(async (req, res, next) => {
+exports.delete_post = [
+  verifyToken,
+  asyncHandler(async (req, res, next) => {
   const { postId } = req.params;
 
-  await Post.findByIdAndDelete(postId);
+  const post = await Post.findByIdAndDelete(postId);
 
-  res.json({ deleted: postId });
-});
+  if (!post) {
+    return res.status(404).json({ error: "Post not found" });
+  }
+
+  res.json({ deleted: 'Post deleted successfully', postId });
+})
+];

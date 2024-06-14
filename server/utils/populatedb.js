@@ -25,7 +25,7 @@ async function main() {
     console.log('Debug: Users created', users);
     await createComments();
     console.log('Debug: Comments created', comments);
-    await createPosts();
+    await createPosts(comments);
     console.log('Debug: Posts created', posts);
 
     console.log('Debug: Closing mongoose');
@@ -57,21 +57,25 @@ async function createUser(
 
 async function createComment(
     index,
-    author,
-    timestamp,
+    author, 
+    timestamp, 
     text
 ) {
-    const commentDetails = {
-        author: author,
-        timestamp: timestamp,
-        text: text,
+    const commentDetails = { 
+        author, 
+        timestamp, 
+        text 
     };
 
     const comment = new Comment(commentDetails);
 
-    await comment.save();
-    comments[index] = comment;
-    console.log(`Added comment: ${comment}`);
+    try {
+        await comment.save();
+        comments[index] = comment;
+        console.log(`Added comment: ${comment}`);
+    } catch (err) {
+        console.error(`Error adding comment by ${author}:`, err);
+    }
 }
 
 async function createPost(
@@ -100,6 +104,7 @@ async function createPost(
     posts[index] = post;
     console.log(`Added post: ${post}`);
 }
+
 
 async function createUsers() {
     console.log('Adding users');
@@ -136,7 +141,7 @@ async function createComments() {
         throw new Error('No users found, cannot create comments');
     }
 
-    console.log('Adding Comments');
+    console.log('Adding comments');
     await Promise.all([
         createComment(0, users[0]._id, new Date(), 'Nice post!'),
         createComment(1, users[1]._id, new Date(), 'Great post!'),
@@ -146,8 +151,8 @@ async function createComments() {
 }
 
 async function createPosts() {
-    if (comments.length === 0) {
-        throw new Error('No comments found, cannot create posts');
+    if (users.length === 0) {
+        throw new Error('No users found, cannot create posts');
     }
 
     console.log('Adding Posts');
@@ -165,7 +170,7 @@ async function createPosts() {
         createPost(
             1,
             'My Test Post 2',
-            'Hello and welcome to my first post on this website.',
+            'Hello and welcome to my second post on this website.',
             '',
             true,
             [comments[2]._id, comments[3]._id],
@@ -174,3 +179,5 @@ async function createPosts() {
         ),
     ]);
 }
+
+

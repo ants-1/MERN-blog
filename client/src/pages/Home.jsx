@@ -9,7 +9,7 @@ function Home({ posts }) {
       </h1>
       <div className="grid grid-cols-1 xl:grid-cols-3 lg:grid-cols-2 gap-4 justify-items-center items-center">
         {posts.map((post) => (
-          <PostCard key={post.id} post={post} />
+          <PostCard key={post._id} post={post} />
         ))}
       </div>
     </main>

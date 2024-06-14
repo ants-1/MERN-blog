@@ -15,7 +15,7 @@ function App() {
         const response = await fetch("http://localhost:3000/api/posts");
         const data = await response.json();
         setPosts(data);
-      } catch (error) {
+      } catch(error) {
         console.log("Error fetching data:", error);
       }
     }
@@ -30,7 +30,7 @@ function App() {
           <Route path="/" element={<Home posts={posts} />} />
           <Route path="/login" element={<Login />} />
           <Route path="/sign-up" element={<SignUp />} />
-          <Route path="/posts" element={<Post />} />
+          <Route path="/posts/:id" element={<Post />} />
         </Routes>
       </Router>
     </>

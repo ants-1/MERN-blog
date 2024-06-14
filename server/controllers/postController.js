@@ -18,7 +18,7 @@ exports.get_all_posts = asyncHandler(async (req, res, next) => {
 // route    GET /api/posts/:id
 exports.get_post = asyncHandler(async (req, res, next) => {
   const { postId } = req.params;
-  const post = await Post.findById(postId).exec();
+  const post = await Post.findById(postId).populate('author').exec();
   res.json(post);
 });
 

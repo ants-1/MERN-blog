@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const user_controller = require('../controllers/userController');
+const auth_controller = require('../controllers/authController');
 const post_controller = require('../controllers/postController');
 const comment_controller = require('../controllers/commentController');
 
@@ -30,10 +30,10 @@ router.delete('/posts/:postId/comments/:commentId', comment_controller.delete_co
 
 // // USER ROUTES
 
-router.post('/sign-up', user_controller.sign_up);
+router.post('/sign-up', auth_controller.sign_up);
 
-router.post('/login', user_controller.login);
+router.post('/login', auth_controller.login);
 
-router.get('/logout', user_controller.logout);
+router.get('/logout', auth_controller.logout);
 
 module.exports = router;

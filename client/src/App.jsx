@@ -1,5 +1,9 @@
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Header from "./components/Header";
 import Home from "./pages/Home";
+import Login from "./pages/Login";
+import SignUp from "./pages/SignUp";
+import Post from "./pages/Post";
 
 function App() {
   const posts = [
@@ -23,8 +27,15 @@ function App() {
 
   return (
     <>
-      <Header />
-      <Home posts={posts}/>
+      <Router>
+        <Header />
+        <Routes>
+          <Route path="/" element={<Home posts={posts} />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/sign-up" element={<SignUp />} />
+          <Route path="/posts" element={<Post />} />
+        </Routes>
+      </Router>
     </>
   );
 }

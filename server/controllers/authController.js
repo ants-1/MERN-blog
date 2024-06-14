@@ -37,12 +37,12 @@ exports.login = [
     const user = await User.findOne({ username: req.body.username });
 
     if (!user) {
-      return res.status(401).json({ message: "Auth Failed" });
+      return res.status(401).json({ message: "Authentication Failed" });
     }
 
     jwt.sign({ user: user }, process.env.SECRET_KEY, (err, token) => {
       return res.status(200).json({
-        message: "Auth passed",
+        message: "Authentication successful",
         token: token,
       });
     });
@@ -50,7 +50,6 @@ exports.login = [
 ];
 
 exports.logout = asyncHandler(async (req, res, next) => {
-  // destory token once logged out
   req.logout((err) => {
     if (err) {
       return res.status(404).json({ error: "Unable to logout." });

@@ -37,7 +37,7 @@ function LoginForm() {
           Password:
         </label>
         <input
-          type="text"
+          type="password"
           name="password"
           id="password"
           {...register("password", { required: true })}

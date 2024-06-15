@@ -1,5 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { format } from "date-fns";
 
 function Post() {
   const { id } = useParams();
@@ -29,26 +30,32 @@ function Post() {
   if (!post) {
     return <div>Loading...</div>;
   }
+  const formattedDate = format(post.timestamp, "dd-MM-yyy");
+  const author =
+    post.author && post.author.username ? post.author.username : "User Deleted";
 
   return (
     <main className="container mx-auto px-10">
       <h1 className="text-4xl font-bold text-center mb-16">{post.title}</h1>
-      <div className="flex justify-center">
+      <div className="flex flex-col items-center">
         <img
           className="bg-gray-200 w-full sm:w-[35rem] h-72 mb-5"
           src={post.url}
           alt={post.title}
         />
-      </div>
-      <p>
-        Author: {post.author.username ? post.author.username : "User Deleted"}
-      </p>
-      <p>Date Posted: {post.timestamp}</p>
-      <div className="mt-10">
-        <p>{post.content}</p>
-        {comments.map((comment) => (
-          <p key={comment.id}>{comment.text}</p>
-        ))}
+        <div className="w-full sm:w-[35rem]">
+          <p>Author: {author}</p>
+          <p className="mb-5">Date Posted: {formattedDate}</p>
+          <p>{post.content}</p>
+          <p className="text-xl font-bold mt-10">Comments</p>
+          <div className="my-5">
+            {comments.length > 0 ? (
+              comments.map((comment) => <p key={comment._id}>{comment.text}</p>)
+            ) : (
+              <p>No comments</p>
+            )}
+          </div>
+        </div>
       </div>
     </main>
   );

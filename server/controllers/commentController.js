@@ -8,7 +8,14 @@ const verifyToken = require("../config/verifyToken");
 // route  GET /api/posts/:postId/comments
 exports.get_all_comments = asyncHandler(async (req, res, next) => {
   const { postId } = req.params;
-  const post = await Post.findById(postId).populate("comments").exec();
+  const post = await Post.findById(postId).populate({
+    path: 'comments',
+    populate: {
+      path: 'author',
+      model: 'User',
+      select: 'username' // Only fetch the username field
+    }
+  }).exec();
   const comments = post.comments;
 
   if (!post) {

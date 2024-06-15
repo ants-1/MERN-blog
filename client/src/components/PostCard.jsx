@@ -3,8 +3,8 @@ import { Link } from "react-router-dom";
 
 function PostCard({ post }) {
   const truncatedContent =
-    post.content.length > 50
-      ? `${post.content.substring(0, 50)}...`
+    post.content.length > 60
+      ? `${post.content.substring(0, 60)}...`
       : post.content;
   const postUrl = `/posts/${post._id}`;
 

@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { format } from "date-fns";
+import { formatDistance } from "date-fns";
+import CommentCard from "../components/CommnentCard";
 
 function Post() {
   const { id } = useParams();
@@ -30,7 +31,9 @@ function Post() {
   if (!post) {
     return <div>Loading...</div>;
   }
-  const formattedDate = format(post.timestamp, "dd-MM-yyy");
+  const formattedDate = formatDistance(post.timestamp, new Date(), {
+    addSuffix: true,
+  });
   const author =
     post.author && post.author.username ? post.author.username : "User Deleted";
 
@@ -45,12 +48,14 @@ function Post() {
         />
         <div className="w-full sm:w-[35rem]">
           <p>Author: {author}</p>
-          <p className="mb-5">Date Posted: {formattedDate}</p>
+          <p className="mb-5">Posted: {formattedDate}</p>
           <p>{post.content}</p>
           <p className="text-xl font-bold mt-10">Comments</p>
           <div className="my-5">
             {comments.length > 0 ? (
-              comments.map((comment) => <p key={comment._id}>{comment.text}</p>)
+              comments.map((comment) => (
+                <CommentCard key={comment._id} comment={comment} />
+              ))
             ) : (
               <p>No comments</p>
             )}

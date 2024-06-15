@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { formatDistance } from "date-fns";
+import ReactLoading from "react-loading";
 import CommentCard from "../components/CommnentCard";
 
 function Post() {
@@ -29,7 +30,18 @@ function Post() {
   }, [id]);
 
   if (!post) {
-    return <div>Loading...</div>;
+    const type = "spin";
+    const color = "#000000";
+    return (
+      <div className="flex items-center justify-center h-96">
+        <ReactLoading
+          type={type}
+          color={color}
+          height={"60px"}
+          width={"60px"}
+        />
+      </div>
+    );
   }
   const formattedDate = formatDistance(post.timestamp, new Date(), {
     addSuffix: true,

@@ -1,5 +1,7 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import { useState, useContext } from "react";
+import { AuthContext } from "./AuthContext";
 
 function LoginForm() {
   const {
@@ -7,9 +9,33 @@ function LoginForm() {
     handleSubmit,
     formState: { errors },
   } = useForm();
+  const [loginError, setLoginError] = useState("");
+  const navigate = useNavigate();
+  const { login } = useContext(AuthContext);
 
-  const onSubmit = (data) => {
-    console.log(data);
+  const onSubmit = async (data) => {
+    try {
+      const response = await fetch("http://localhost:3000/api/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      const result = await response.json();
+      if (response.ok) {
+        console.log("Login successful", result);
+        login(result.token);
+        navigate("/"); 
+      } else {
+        console.error("Login failed", result);
+        setLoginError(result.message || "Login failed");
+      }
+    } catch (error) {
+      console.error("An error occurred", error);
+      setLoginError("*Login Failed. Please try again.");
+    }
   };
 
   return (
@@ -17,7 +43,6 @@ function LoginForm() {
       className="space-y-4 md:space-y-6"
       onSubmit={handleSubmit(onSubmit)}
       method="POST"
-      action=""
     >
       <div>
         <label htmlFor="username" className="block mb-2 font-medium">
@@ -47,6 +72,7 @@ function LoginForm() {
           <p className="text-red-500 text-sm">*Password is required</p>
         )}
       </div>
+      {loginError && <p className="text-red-500 text-sm">{loginError}</p>}
       <button
         type="submit"
         className="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow"

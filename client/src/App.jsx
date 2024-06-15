@@ -5,25 +5,26 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
 import Post from "./pages/Post";
+import { AuthProvider } from "./components/AuthContext";
 
 function App() {
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
-    const fetchData = async() => {
+    const fetchData = async () => {
       try {
         const response = await fetch("http://localhost:3000/api/posts");
         const data = await response.json();
         setPosts(data);
-      } catch(error) {
+      } catch (error) {
         console.log("Error fetching data:", error);
       }
-    }
+    };
     fetchData();
   });
 
   return (
-    <>
+    <AuthProvider>
       <Router>
         <Header />
         <Routes>
@@ -33,7 +34,7 @@ function App() {
           <Route path="/posts/:id" element={<Post />} />
         </Routes>
       </Router>
-    </>
+    </AuthProvider>
   );
 }
 

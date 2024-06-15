@@ -9,9 +9,9 @@ function PostCard({ post }) {
   const postUrl = `/posts/${post._id}`;
 
   return (
-    <div className="max-w-sm bg-white border border-gray-400 rounded-lg shadow mb-10 h-[25rem]">
+    <div className="max-w-sm bg-green-200 border border-gray-400 rounded-lg shadow mb-10 h-[25rem]">
       <Link to={postUrl}>
-        <img className="rounded-t-lg h-52" src="" alt="" />
+        <img className="rounded-t-lg h-52 bg-white" src="" alt="" />
       </Link>
       <div className="p-5">
         <Link to={postUrl}>

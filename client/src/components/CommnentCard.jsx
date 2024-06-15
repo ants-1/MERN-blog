@@ -10,7 +10,7 @@ function CommentCard({ comment }) {
   comment.author && comment.author.username ? comment.author.username : "User Deleted";
 
   return (
-    <div className="max-w border border-gray-400 px-6 py-4 rounded-lg my-10">
+    <div className="max-w border border-gray-400 px-6 py-4 rounded-lg my-10 ">
       <div className="flex items-center mb-6">
         <img src="" alt="Avater" className="w-12 h-12 rounded-full mr-4 bg-black" />
         <div>

@@ -1,5 +1,7 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import { useState, useContext } from "react";
+import { AuthContext } from "./AuthContext";
 
 function SignUpForm() {
   const {
@@ -8,11 +10,34 @@ function SignUpForm() {
     watch,
     formState: { errors },
   } = useForm();
-
   const password = watch("password");
+  const [signUpError, setSignUpError] = useState("");
+  const navigate = useNavigate();
+  const { login } = useContext(AuthContext)
 
-  const onSubmit = (data) => {
-    console.log(data);
+  const onSubmit = async (data) => {
+    try {
+      const response = await fetch("http://localhost:3000/api/sign-up", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      const result = await response.json();
+      if (response.ok) {
+        console.log("Sign Up successful", result);
+        login(result.token);
+        navigate("/");
+      } else {
+        console.log("Error Signing Up", result);
+        setSignUpError(result.message || "Sign up Failed");
+      }
+    } catch (error) {
+      console.log("An error occurred", error);
+      setSignUpError("*Sign up Failed. Please try again.");
+    }
   };
 
   return (
@@ -20,6 +45,7 @@ function SignUpForm() {
       className="space-y-4 md:space-y-6"
       onSubmit={handleSubmit(onSubmit)}
       method="POST"
+      action="http://localhost:3000/api/sign-up"
     >
       <div>
         <label htmlFor="username" className="block mb-2 font-medium">
@@ -88,6 +114,7 @@ function SignUpForm() {
           </p>
         )}
       </div>
+      {signUpError && <p className="text-red-500 text-sm">{signUpError}</p>}
       <button
         type="submit"
         className="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow"

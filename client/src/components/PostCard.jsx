@@ -9,7 +9,7 @@ function PostCard({ post }) {
   const postUrl = `/posts/${post._id}`;
 
   return (
-    <div className="max-w-sm bg-green-200 border border-gray-400 rounded-lg shadow mb-10 h-[25rem] w-96 flex flex-col justify-between">
+    <div className="max-w-sm bg-green-200 border border-gray-400 rounded-lg shadow-md mb-10 h-[25rem] w-96 flex flex-col justify-between">
       <Link to={postUrl}>
         <img className="rounded-t-lg h-52 bg-white" src="" alt="" />
       </Link>

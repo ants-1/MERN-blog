@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { formatDistance } from "date-fns";
 import ReactLoading from "react-loading";
 import CommentCard from "../components/CommnentCard";
+import CommentForm from "../components/CommentForm";
 
 function Post() {
   const { id } = useParams();
@@ -69,8 +70,9 @@ function Post() {
                 <CommentCard key={comment._id} comment={comment} />
               ))
             ) : (
-              <p>No comments</p>
+              <p className="mb-10">No comments</p>
             )}
+            <CommentForm />
           </div>
         </div>
       </div>

@@ -1,5 +1,6 @@
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { jwtDecode } from 'jwt-decode'; 
 
 function PostForm() {
   const {
@@ -13,6 +14,17 @@ function PostForm() {
   const onSubmit = async (data) => {
     try {
       const token = localStorage.getItem("token");
+
+      const decodedToken = jwtDecode(token);
+      const userId = decodedToken.user._id;
+
+      data.author = userId;
+
+      if (!token) {
+        console.error("No token found");
+        return;
+      }
+
       const response = await fetch("http://localhost:3000/api/posts", {
         method: "POST",
         headers: {

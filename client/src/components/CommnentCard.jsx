@@ -25,8 +25,8 @@ function CommentCard({ comment }) {
 
 CommentCard.propTypes = {
   comment: PropTypes.shape({
-    id: PropTypes.number.isRequired,
-    author: PropTypes.string,
+    _id: PropTypes.string.isRequired,
+    author: PropTypes.object,
     timestamp: PropTypes.string,
     text: PropTypes.string.isRequired,
   }).isRequired,

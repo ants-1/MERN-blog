@@ -19,7 +19,7 @@ function Home({ posts }) {
 Home.propTypes = {
     posts: PropTypes.arrayOf(
       PropTypes.shape({
-        id: PropTypes.number.isRequired,
+        _id: PropTypes.string.isRequired,
         title: PropTypes.string.isRequired,
       })
     ).isRequired,

@@ -1,12 +1,14 @@
-import { useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useParams, Link } from "react-router-dom";
+import { useContext, useEffect, useState } from "react";
 import { formatDistance } from "date-fns";
+import { AuthContext } from "../components/AuthContext";
 import ReactLoading from "react-loading";
 import CommentCard from "../components/CommnentCard";
 import CommentForm from "../components/CommentForm";
 
 function Post() {
   const { id } = useParams();
+  const { isLoggedIn } = useContext(AuthContext);
   const [post, setPost] = useState(null);
   const [comments, setComment] = useState([]);
 
@@ -65,6 +67,16 @@ function Post() {
           <p>{post.content}</p>
           <p className="text-xl font-bold mt-10">Comments</p>
           <div className="my-5">
+            {isLoggedIn ? (
+              <CommentForm postId={post._id} />
+            ) : (
+              <Link
+                to="/login"
+                className="bg-white hover:bg-gray-100 font-semibold py-2 px-4 border border-gray-400 rounded shadow"
+              >
+                Login to post comment
+              </Link>
+            )}
             {comments.length > 0 ? (
               comments.map((comment) => (
                 <CommentCard key={comment._id} comment={comment} />
@@ -72,7 +84,6 @@ function Post() {
             ) : (
               <p className="mb-10">No comments</p>
             )}
-            <CommentForm />
           </div>
         </div>
       </div>

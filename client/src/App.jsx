@@ -6,6 +6,7 @@ import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
 import Post from "./pages/Post";
 import { AuthProvider } from "./components/AuthContext";
+import PostForm from "./components/PostForm";
 
 function App() {
   const [posts, setPosts] = useState([]);
@@ -32,6 +33,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/sign-up" element={<SignUp />} />
           <Route path="/posts/:id" element={<Post />} />
+          <Route path="/posts" element={<PostForm />} />
         </Routes>
       </Router>
     </AuthProvider>

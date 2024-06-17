@@ -1,4 +1,3 @@
-// Header.js
 import { Link, useNavigate } from 'react-router-dom';
 import { useContext } from 'react';
 import { AuthContext } from './AuthContext';
@@ -18,12 +17,20 @@ function Header() {
         Blog
       </Link>
       {isLoggedIn ? (
-        <button
-          onClick={handleLogout}
-          className="bg-white hover:bg-gray-100 font-semibold py-2 px-4 border border-gray-400 rounded shadow"
-        >
-          Logout
-        </button>
+        <div className='flex items-center'>
+          <Link
+            to="/posts"
+            className="bg-white hover:bg-gray-100 font-semibold py-2 px-4 border border-gray-400 rounded shadow mr-2 h-10"
+          >
+            Create Post
+          </Link>
+          <button
+            onClick={handleLogout}
+            className="bg-white hover:bg-gray-100 font-semibold py-2 px-4 border border-gray-400 rounded shadow h-10"
+          >
+            Logout
+          </button>
+        </div>
       ) : (
         <Link
           to="/login"

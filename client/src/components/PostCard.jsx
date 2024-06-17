@@ -9,15 +9,15 @@ function PostCard({ post }) {
   const postUrl = `/posts/${post._id}`;
 
   return (
-    <div className="max-w-sm bg-green-200 border border-gray-400 rounded-lg shadow mb-10 h-[25rem]">
+    <div className="max-w-sm bg-green-200 border border-gray-400 rounded-lg shadow mb-10 h-[25rem] w-96 flex flex-col justify-between">
       <Link to={postUrl}>
         <img className="rounded-t-lg h-52 bg-white" src="" alt="" />
       </Link>
       <div className="p-5">
         <Link to={postUrl}>
-          <h5 className="mb-2 text-2xl font-bold">{post.title}</h5>
+          <h5 className="mb-2 text-2xl font-semi-bold">{post.title}</h5>
         </Link>
-        <p className="mb-3 font-normal text-gray-700">{truncatedContent}</p>
+        <p className="mb-3 font-normal text-gray-700 h-16">{truncatedContent}</p>
         <Link
           to={postUrl}
           className="inline-flex bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow"

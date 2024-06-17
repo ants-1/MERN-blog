@@ -13,7 +13,7 @@ function SignUpForm() {
   const password = watch("password");
   const [signUpError, setSignUpError] = useState("");
   const navigate = useNavigate();
-  const { login } = useContext(AuthContext)
+  const { login } = useContext(AuthContext);
 
   const onSubmit = async (data) => {
     try {

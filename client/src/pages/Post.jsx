@@ -82,7 +82,7 @@ function Post() {
                 <CommentCard key={comment._id} comment={comment} />
               ))
             ) : (
-              <p className="mb-10">No comments</p>
+              <p className="my-10">No comments</p>
             )}
           </div>
         </div>

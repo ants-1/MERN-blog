@@ -1,32 +1,55 @@
+import { jwtDecode } from "jwt-decode";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
-import { jwtDecode } from 'jwt-decode'; 
+import { useParams, useNavigate } from "react-router-dom";
+import ReactLoading from "react-loading";
 
-function PostForm() {
+function EditPostForm() {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const [post, setPost] = useState(null);
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset,
   } = useForm();
-  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchPost = async () => {
+      try {
+        const response = await fetch(`http://localhost:3000/api/posts/${id}`);
+        const result = await response.json();
+        if (response.ok) {
+          setPost(result);
+          reset(result);
+        } else {
+          console.error("Error fetching post", result);
+        }
+      } catch (error) {
+        console.error("An error occurred", error);
+      }
+    };
+
+    fetchPost();
+  }, [id, reset]);
 
   const onSubmit = async (data) => {
     try {
       const token = localStorage.getItem("token");
-
-      const decodedToken = jwtDecode(token);
-      const userId = decodedToken.user._id;
-
-      data.author = userId;
 
       if (!token) {
         console.error("No token found");
         return;
       }
 
-      const response = await fetch("http://localhost:3000/api/posts", {
-        method: "POST",
+      const decodedToken = jwtDecode(token);
+      const userId = decodedToken.user._id;
+
+      data.author = userId;
+
+      const response = await fetch(`http://localhost:3000/api/posts/${id}`, {
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
@@ -36,22 +59,37 @@ function PostForm() {
 
       const result = await response.json();
       if (response.ok) {
-        console.log("Post created successfully", result);
+        console.log("Post updated successfully", result);
         reset();
         navigate("/");
       } else {
-        console.error("Error while creating Post", result);
+        console.error("Error while updating Post", result);
       }
     } catch (error) {
       console.error("An error occurred", error);
     }
   };
 
+  if (!post) {
+    const type = "spin";
+    const color = "#000000";
+    return (
+      <div className="flex items-center justify-center h-96">
+        <ReactLoading
+          type={type}
+          color={color}
+          height={"60px"}
+          width={"60px"}
+        />
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto">
       <div className="w-full rounded-lg border border-gray-400 shadow md:mt-0 sm:max-w-md bg-green-200">
         <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
-          <h1 className="text-xl font-bold md:text-2xl">Create Post</h1>
+          <h1 className="text-xl font-bold md:text-2xl">Edit Post</h1>
           <form
             className="space-y-4 md:space-y-6"
             onSubmit={handleSubmit(onSubmit)}
@@ -64,6 +102,7 @@ function PostForm() {
                 type="text"
                 id="title"
                 {...register("title", { required: true })}
+                defaultValue={post.title}
                 className="border border-gray-400 sm:text-sm rounded-lg block w-full p-2.5 mb-2"
               />
               {errors.title && (
@@ -77,6 +116,7 @@ function PostForm() {
               <textarea
                 id="content"
                 {...register("content", { required: true })}
+                defaultValue={post.content}
                 className="border border-gray-400 sm:text-sm rounded-lg block w-full p-2.5 mb-2"
               ></textarea>
               {errors.content && (
@@ -84,6 +124,8 @@ function PostForm() {
                   Blog Content is required
                 </p>
               )}
+            </div>
+            <div>
               <label className="block mb-2 font-medium">Published:</label>
               <div>
                 <label htmlFor="public">
@@ -91,7 +133,8 @@ function PostForm() {
                     type="radio"
                     id="public"
                     name="published"
-                    value={true}
+                    value="true"
+                    defaultChecked={post.published === true}
                     {...register("published", { required: true })}
                     className="mr-2"
                   />
@@ -102,17 +145,19 @@ function PostForm() {
                     type="radio"
                     id="private"
                     name="published"
-                    value={false}
+                    value="false"
+                    defaultChecked={post.published === false}
                     {...register("published", { required: true })}
                     className="mr-2"
                   />
                   Private
                 </label>
-                {errors.published && (
-                <p className="text-red-500 text-sm mt-2">Published status is required</p>
-              )}
               </div>
-              <input type="hidden" id="author" name="author" />
+              {errors.published && (
+                <p className="text-red-500 text-sm mb-2">
+                  Published status is required
+                </p>
+              )}
             </div>
             <button
               type="submit"
@@ -127,4 +172,4 @@ function PostForm() {
   );
 }
 
-export default PostForm;
+export default EditPostForm;

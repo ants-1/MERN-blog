@@ -79,7 +79,7 @@ function Post() {
             )}
             {comments.length > 0 ? (
               comments.map((comment) => (
-                <CommentCard key={comment._id} comment={comment} />
+                <CommentCard key={comment._id} comment={comment} post={post} />
               ))
             ) : (
               <p className="my-10">No comments</p>

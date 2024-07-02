@@ -57,8 +57,8 @@ function Post() {
       <h1 className="text-4xl font-bold text-center mb-16">{post.title}</h1>
       <div className="flex flex-col items-center">
         <img
-          className="bg-gray-200 w-full sm:w-[35rem] h-72 mb-5"
-          src={post.url}
+          className="bg-gray-200 w-full sm:w-[35rem] h-72 object-cover mb-5"
+          src={post.img_url}
           alt={post.title}
         />
         <div className="w-full sm:w-[35rem]">

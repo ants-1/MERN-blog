@@ -44,6 +44,7 @@ exports.login = [
       return res.status(200).json({
         message: "Authentication successful",
         token: token,
+        expiresIn: "30m"
       });
     });
   }),

@@ -68,7 +68,7 @@ function PostCard({ post }) {
   return (
     <div className="max-w-sm bg-green-200 border border-gray-400 rounded-lg shadow-md mb-10 h-[25rem] w-96 flex flex-col justify-between">
       <Link to={postUrl}>
-        <img className="rounded-t-lg h-52 bg-white" src="" alt="" />
+        <img className="rounded-t-lg h-52 w-full object-cover bg-white" src={post.img_url} alt={post.title} />
       </Link>
       <div className="p-5">
         <Link to={postUrl}>

@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { jwtDecode } from 'jwt-decode'; 
+import { jwtDecode } from "jwt-decode";
 
 function PostForm() {
   const {
@@ -14,26 +14,33 @@ function PostForm() {
   const onSubmit = async (data) => {
     try {
       const token = localStorage.getItem("token");
-
-      const decodedToken = jwtDecode(token);
-      const userId = decodedToken.user._id;
-
-      data.author = userId;
-
       if (!token) {
         console.error("No token found");
         return;
       }
-
+  
+      const decodedToken = jwtDecode(token);
+      const userId = decodedToken.user._id;
+      data.author = userId;
+  
+      const formData = new FormData();
+      formData.append('title', data.title);
+      formData.append('content', data.content);
+      formData.append('published', data.published);
+      formData.append('author', data.author);
+  
+      if (data.img_url && data.img_url[0]) {
+        formData.append('img_url', data.img_url[0]);
+      }
+  
       const response = await fetch("http://localhost:3000/api/posts", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(data),
+        body: formData,
       });
-
+  
       const result = await response.json();
       if (response.ok) {
         console.log("Post created successfully", result);
@@ -46,6 +53,7 @@ function PostForm() {
       console.error("An error occurred", error);
     }
   };
+  
 
   return (
     <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto">
@@ -55,6 +63,7 @@ function PostForm() {
           <form
             className="space-y-4 md:space-y-6"
             onSubmit={handleSubmit(onSubmit)}
+            encType="multipart/form-data"
           >
             <div>
               <label htmlFor="title" className="block mb-2 font-medium">
@@ -109,8 +118,22 @@ function PostForm() {
                   Private
                 </label>
                 {errors.published && (
-                <p className="text-red-500 text-sm mt-2">Published status is required</p>
-              )}
+                  <p className="text-red-500 text-sm mt-2">
+                    Published status is required
+                  </p>
+                )}
+              </div>
+              <div>
+                <label htmlFor="postImage" className="block my-2 font-medium">
+                  Upload file
+                </label>
+                <input
+                  type="file"
+                  name="img_url"
+                  id="img_url"
+                  {...register("img_url", { required: false })}
+                  className="border border-gray-400 sm:text-sm rounded-lg block w-full p-2.5 mb-2 bg-white"
+                />
               </div>
               <input type="hidden" id="author" name="author" />
             </div>

@@ -3,7 +3,7 @@ const asyncHandler = require("express-async-handler");
 const verifyToken = require("../config/verifyToken");
 const cloudinary = require("cloudinary").v2;
 const multer = require("multer");
-require('dotenv').config();
+require("dotenv").config();
 
 const upload = multer({ dest: "./public/data/uploads/" });
 
@@ -33,8 +33,10 @@ const uploadImageCloudinary = async (imagePath) => {
 
 // @desc    Retrieve all posts
 // route    GET /api/posts
-exports.get_all_posts = asyncHandler(async (req, res, next) => {
-  const posts = await Post.find().exec();
+exports.get_all_posts = asyncHandler(async (req, res) => {
+  const searchQuery = req.query.search || ""; 
+  const query = searchQuery ? { title: new RegExp(searchQuery, 'i') } : {};
+  const posts = await Post.find(query, "title").exec();
 
   if (!posts) {
     return res.status(404).json({ error: "No posts exist." });
@@ -47,7 +49,7 @@ exports.get_all_posts = asyncHandler(async (req, res, next) => {
 // route    GET /api/posts/:id
 exports.get_post = asyncHandler(async (req, res, next) => {
   const { postId } = req.params;
-  const post = await Post.findById(postId).populate('author').exec();
+  const post = await Post.findById(postId).populate("author").exec();
   res.json(post);
 });
 
@@ -57,19 +59,14 @@ exports.create_post = [
   verifyToken,
   upload.single("img_url"),
   asyncHandler(async (req, res, next) => {
-    console.log(`File: ${JSON.stringify(req.file, null, 2)})`);
-    console.log(`Body: ${JSON.stringify(req.body, null, 2)})`);
-    console.log(`Img: ${JSON.stringify(req.img_url, null, 2)})`);
-    console.log(`Img: ${JSON.stringify(req.file.img_url, null, 2)})`);
-    
-    let imageUrl = '';
+    let imageUrl = "";
     if (req.file) {
       try {
         const result = await uploadImageCloudinary(req.file.path);
         console.log(`result: ${result}`);
         imageUrl = result;
       } catch (error) {
-        return res.status(500).json({ error: 'Error uploading image' });
+        return res.status(500).json({ error: "Error uploading image" });
       }
     } else {
       console.log("No file uploaded or multer configuration issue");
@@ -137,14 +134,14 @@ exports.update_post = [
 exports.delete_post = [
   verifyToken,
   asyncHandler(async (req, res, next) => {
-  const { postId } = req.params;
+    const { postId } = req.params;
 
-  const post = await Post.findByIdAndDelete(postId);
+    const post = await Post.findByIdAndDelete(postId);
 
-  if (!post) {
-    return res.status(404).json({ error: "Post not found" });
-  }
+    if (!post) {
+      return res.status(404).json({ error: "Post not found" });
+    }
 
-  res.json({ deleted: 'Post deleted successfully', postId });
-})
+    res.json({ deleted: "Post deleted successfully", postId });
+  }),
 ];

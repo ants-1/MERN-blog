@@ -36,4 +36,8 @@ router.post('/login', auth_controller.login);
 
 router.get('/logout', auth_controller.logout);
 
+router.get('/profile/:userId', auth_controller.get_profile);
+
+router.put('/profile/:userId', auth_controller.update_profile);
+
 module.exports = router;

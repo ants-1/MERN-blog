@@ -26,18 +26,21 @@ function PostCard({ post }) {
 
   const isAdmin = decodedToken?.user?.is_admin;
   const currentUser = decodedToken?.user?._id;
-  const isAuthor = post.author === currentUser;
+  const isAuthor = post?.author === currentUser;
 
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
 
   const handleDelete = async () => {
     try {
-      const response = await fetch(`http://localhost:3000/api/posts/${post._id}`, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await fetch(
+        `http://localhost:3000/api/posts/${post._id}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       if (response.ok) {
         console.log("Post deleted successfully");
@@ -47,7 +50,7 @@ function PostCard({ post }) {
     } catch (error) {
       console.error("An error occurred:", error);
     }
-    
+
     setShowConfirmDelete(false);
   };
 
@@ -60,15 +63,24 @@ function PostCard({ post }) {
   };
 
   const truncatedContent =
-    post.content.length > 60
+    post?.content?.length > 60
       ? `${post.content.substring(0, 60)}...`
-      : post.content;
-  const postUrl = `/posts/${post._id}`;
+      : post?.content || "";
+
+  const postUrl = `/posts/${post?._id}`;
+
+  if (!post) {
+    return null;
+  }
 
   return (
     <div className="max-w-sm bg-green-200 border border-gray-400 rounded-lg shadow-md mb-10 h-[25rem] w-96 flex flex-col justify-between">
       <Link to={postUrl}>
-        <img className="rounded-t-lg h-52 w-full object-cover bg-white" src={post.img_url} alt={post.title} />
+        <img
+          className="rounded-t-lg h-52 w-full object-cover bg-white"
+          src={post.img_url}
+          alt={post.title}
+        />
       </Link>
       <div className="p-5">
         <Link to={postUrl}>
@@ -89,7 +101,10 @@ function PostCard({ post }) {
               <Link to={`/edit/${post._id}`}>
                 <img src="/edit-icon.png" alt="Edit Icon" className="h-5 w-5" />
               </Link>
-              <button onClick={showDeleteConfirmation} className="cursor-pointer">
+              <button
+                onClick={showDeleteConfirmation}
+                className="cursor-pointer"
+              >
                 <img
                   src="/delete-icon.png"
                   alt="Delete Icon"
@@ -105,10 +120,16 @@ function PostCard({ post }) {
           <div className="bg-white p-5 rounded-lg shadow-md">
             <p className="mb-3">Are you sure you want to delete this post?</p>
             <div className="flex justify-end">
-              <button onClick={handleDelete} className="bg-red-600 hover:bg-red-800 text-white font-semibold py-2 px-4 border border-gray-400 rounded shadow-md mr-5">
+              <button
+                onClick={handleDelete}
+                className="bg-red-600 hover:bg-red-800 text-white font-semibold py-2 px-4 border border-gray-400 rounded shadow-md mr-5"
+              >
                 Delete
               </button>
-              <button onClick={hideDeleteConfirmation} className="bg-white hover:bg-gray-100 font-semibold py-2 px-4 border border-gray-400 rounded shadow-md">
+              <button
+                onClick={hideDeleteConfirmation}
+                className="bg-white hover:bg-gray-100 font-semibold py-2 px-4 border border-gray-400 rounded shadow-md"
+              >
                 Cancel
               </button>
             </div>
@@ -133,4 +154,3 @@ PostCard.propTypes = {
 };
 
 export default PostCard;
- 

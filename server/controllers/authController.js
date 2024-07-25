@@ -58,3 +58,11 @@ exports.logout = asyncHandler(async (req, res, next) => {
     res.status(200).json({ success: "Logout successful." });
   });
 });
+
+exports.get_profile = asyncHandler(async (req, res, next) => {
+
+});
+
+exports.update_profile = asyncHandler(async (req, res, next) => {
+
+});
